@@ -1,0 +1,396 @@
+openapi: 3.0.3
+info:
+  title: Lab Works Api
+  description: "Cпецификация в формате OpenAPI для набора веб-сервисов"
+  version: 1.0.0
+servers: 
+  - url: "https://localhost:1111/soa-kozlov"
+tags:
+  - name: Laboratory work
+    description: se.ifmo.ru
+paths:
+
+  /lab-works:
+  
+    post:
+      tags:
+        - Laboratory work
+      summary: Add a new Lab work to the store
+      description: Add a new Lab work to the store
+      operationId: addLabWork
+      requestBody:
+        description: Create a new Lab work in the store
+        content:
+           application/xml:
+            schema:
+              $ref: '#/components/schemas/LabWork'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+        '405':
+          description: Invalid input
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+
+    put:
+      tags:
+        - Laboratory work
+      summary: Update Lab work
+      description: Update Lab work
+      operationId: updateLabWork
+      requestBody:
+        description: Create a new Lab work in the store
+        content:
+           application/xml:
+            schema:
+              $ref: '#/components/schemas/LabWork'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lab work not found
+        '405':
+          description: Validation exception
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+          
+    get:
+      tags:
+        - Laboratory work
+      summary: Fetching all Lab work
+      description: Fetching all Lab work
+      operationId: fetchAllLabWork
+      parameters:
+        - name: size
+          in: query
+          description: Number of objects per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: fields
+          in: query
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/LabWork"
+        - name: sort
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - id
+                - name
+                - coordinates
+                - creationDate
+                - minimalPoint
+                - personalQualitiesMinimum
+                - personalQualitiesMaximum
+                - difficulty
+                - author
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+                  
+        '404':
+          description: Lab works not found
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+  
+  /lab-works/{labWorkId}:
+    get:
+      tags:
+        - Laboratory work
+      summary: Fetching lab work by id
+      description: Fetching lab work by id
+      operationId: getLabWorkById
+      parameters:
+        - name: labWorkId
+          in: path
+          description: ID of Lab Work that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lab work not found
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+          
+    delete:
+      tags:
+        - Laboratory work
+      summary: Delete lab work by id
+      description: Delete lab work by id
+      operationId: deleteLabWorkById
+      parameters:
+        - name: labWorkId
+          in: path
+          description: Lab work id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lab work not found
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+          
+  /lab-works/sum/minimalPoint:   
+    get:
+      tags:
+        - Laboratory work
+      summary: Get sum of the minimalPoint of laboratory works
+      description: Get sum of the minimalPoint of laboratory works
+      operationId: sumMinimalPoint
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  sumMinimalPoint:
+                    type: integer
+                xml:
+                  name: 'sum'    
+        '404':
+          description: Lab works not found
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+
+  /lab-works/minimalPoint/min:
+    get:
+      tags:
+        - Laboratory work
+      summary: Get minimum of the minimalPoint of laboratory works
+      description: Get minimum of the minimalPoint of laboratory works
+      operationId: minMinimalPoint  
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+        '404':
+          description: Lab works not found
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+          
+  /lab-works/creationDate/max:
+    get:
+      tags:
+        - Laboratory work
+      summary: Get maximum of the creationDate of laboratory works
+      description: Get maximum of the creationDate of laboratory works
+      operationId: maxCreationDate
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LabWork'
+        '404':
+          description: Lab works not found
+        '500':
+          description: Internal server error
+        '503':
+          description: Service Unavailable
+components:
+  schemas:
+    LabWork:
+      required:
+        - name
+        - coordinates
+        - creationDate
+        - minimalPoint
+        - difficulty
+        - author
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 22
+          minimum: 1
+        name:
+          type: string
+          minLength: 1
+          example: SOA
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        creationDate:
+          type: string
+          format: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2022-10-16"
+        minimalPoint:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 100
+        personalQualitiesMinimum:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 2
+        personalQualitiesMaximum:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 100
+        difficulty:
+          $ref: '#/components/schemas/Difficulty'
+        author:
+          $ref: '#/components/schemas/Person'
+      xml:
+        name: labWork
+        
+  
+    Coordinates:
+      required:
+        - x
+        - y
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+          minimum: -446
+          exclusiveMinimum: true
+          example: 0.1
+        y:
+          type: number
+          format: double
+          example: 56.2
+      xml:
+        name: coordinates
+        
+    Person:
+      required:
+        - name
+        - birthday
+        - location
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: Victor Kozlov
+        birthday:
+          type: string
+          format: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2000-10-23"
+        height:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 60
+        weight:
+          type: number
+          format: float
+          minimum: 0
+          exclusiveMinimum: true
+          example: 182.5
+        location:
+           $ref: '#/components/schemas/Location'
+      xml:
+        name: person
+        
+    Location:
+      required:
+        - x
+        - y
+        - z
+        - name
+      type: object
+      properties:
+        x:
+          type: integer
+          format: int64
+          example: 24
+        y:
+          type: number
+          format: double
+          example: -10.10
+        z:
+          type: integer
+          format: int64
+          example: 215
+        name:
+          type: string
+          maxLength: 310
+          example: Toronto
+      xml:
+        name: location
+        
+    Difficulty:
+      type: string
+      enum:
+        - VERY_EASY
+        - EASY
+        - NORMAL
+      
